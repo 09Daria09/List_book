@@ -39,7 +39,7 @@ namespace List_book
         }
         public void Delete()
         {
-            Console.Write($"\nВведите номер книги которую вы хотите удалить (1 - {count.Length}) -> ") ;
+            Console.Write($"\nВведите номер книги которую вы хотите удалить (1 - {count.Length}) -> ");
             int index = Convert.ToInt32(Console.ReadLine());
 
             if (index < 0 || index >= count.Length)
@@ -47,15 +47,36 @@ namespace List_book
                 Console.WriteLine("Индекс за пределами массива");
                 return;
             }
-            count[index-1] = null;
+            count[index - 1] = null;
             count = count.Where(x => x != null).ToArray();
+        }
+        public void Faind()
+        {
+            Console.Write($"\nВведите название книги -> ");
+            string str = Console.ReadLine();
+            bool haveBook = false;
+            for (int i = 0; i < count.Length; i++)
+            {
+                if (count[i].Title == str)
+                {
+                    Console.WriteLine("Ваша книга");
+                    Console.WriteLine(count[i].ToString());
+                    haveBook = true;
+                }
+            }
+            if (haveBook == false)
+            {
+                Console.WriteLine("Книга не найдена");
+            }
+
+
         }
         public override string ToString()
         {
             string result = null;
             for (int i = 0; i < count.Length; i++)
             {
-                result += $"\n\t-----{i+1}-----\n"+ count[i].ToString();
+                result += $"\n\t-----{i + 1}-----\n" + count[i].ToString();
             }
             return result;
         }

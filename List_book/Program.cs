@@ -14,9 +14,10 @@ namespace List_book
             library.Add();
             string str = library.ToString();
             Console.WriteLine(str);
-            library.Delete();
-            string str1 = library.ToString();
-            Console.WriteLine(str1);
+           // library.Delete();
+           // string str1 = library.ToString();
+           // Console.WriteLine(str1);
+            library.Faind();
         }
     }
 }
