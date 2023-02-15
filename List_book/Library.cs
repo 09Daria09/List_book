@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace List_book
 {
-    class Library
+    class Library : IEnumerable
     {
         Book[] count;
         static int len = 0;
@@ -17,6 +18,14 @@ namespace List_book
             {
                 count[i] = new Book();
                 count[i].Init();
+            }
+        }
+        public Library(Book[] books)
+        {
+            count = new Book[books.Length];
+            for (int i = 0; i < books.Length; i++)
+            {
+                count[i] = new Book(books[i].Title, books[i].Author, books[i].YearPublishing, books[i].Star);
             }
         }
         public Book this[int i]
@@ -65,9 +74,7 @@ namespace List_book
                 }
             }
             if (haveBook == false)
-            {
                 Console.WriteLine("Книга не найдена");
-            }
 
 
         }
@@ -75,58 +82,87 @@ namespace List_book
         {
             string result = null;
             for (int i = 0; i < count.Length; i++)
-            {
                 result += $"\n\t-----{i + 1}-----\n" + count[i].ToString();
-            }
             return result;
         }
-        public class Book
+
+        public IEnumerator GetEnumerator()
         {
-            public string Title { get; set; }
-            public string Author { get; set; }
-            public int YearPublishing { get; set; }
-            public int Star { get; set; }
-            public Book()
-            {
-                Title = null;
-                Author = null;
-                YearPublishing = 0;
-                Star = 0;
-            }
-            public Book(string title, string author, int yearPublishing, int star)
-            {
-                Title = title;
-                Author = author;
-                YearPublishing = yearPublishing;
-                Star = star;
-            }
-            public void Init()
-            {
-
-                Console.Write("Введите название книги -> ");
-                Title = Console.ReadLine();
-                Console.Write("Введите автора книги -> ");
-                Author = Console.ReadLine();
-                Console.Write("Введите годи издания книги -> ");
-                YearPublishing = Convert.ToInt32(Console.ReadLine());
-                Console.Write("Cколько звезд вы поставите книге (0-5) -> ");
-                Star = Convert.ToInt32(Console.ReadLine());
-            }
-            public string PrintStar()
-            {
-                string buf = null;
-                for (int i = 0; i < Star; i++)
-                {
-                    buf += "* ";
-                }
-                return buf;
-            }
-            public override string ToString()
-            {
-                return $"Название книги: {Title}\nАвтор книги: {Author}\nГод издания книги: {YearPublishing}\n" +
-                    $"Оценка книги: {PrintStar()}";
-            }
-
+            Console.WriteLine("\nВыполняется утипизация");
+            for (int i = 0; i < count.Length; i++)
+                yield return count[i];
         }
+    }
+
+    class Book : ICloneable
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public int YearPublishing { get; set; }
+        public int Star { get; set; }
+        public Book() 
+        {
+            Title = null;
+            Author = null;
+            YearPublishing = 0;
+            Star = 0;
+        }
+        public Book(string title, string author, int yearPublishing, int star)
+        {
+            Title = title;
+            Author = author;
+            YearPublishing = yearPublishing;
+            Star = star;
+        }
+        public void Init()
+        {
+            Console.Write("Введите название книги -> ");
+            Title = Console.ReadLine();
+            Console.Write("Введите автора книги -> ");
+            Author = Console.ReadLine();
+            Console.Write("Введите годи издания книги -> ");
+            YearPublishing = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Cколько звезд вы поставите книге (0-5) -> ");
+            Star = Convert.ToInt32(Console.ReadLine());
+        }
+        public string PrintStar()
+        {
+            string buf = null;
+            for (int i = 0; i < Star; i++)
+                buf += "* ";
+            return buf;
+        }
+        public override string ToString()
+        {
+            return $"Название книги: {Title}\nАвтор книги: {Author}\nГод издания книги: {YearPublishing}\n" +
+                $"Оценка книги: {PrintStar()}";
+        }
+
+        public object Clone()
+        {
+            return new Book(Title, Author, YearPublishing, Star);
+        }
+
+        public class SortByName : IComparer
+        {
+            int IComparer.Compare(object obj1, object obj2)
+            {
+                if (obj1 is Book && obj2 is Book)
+                    return (obj1 as Book).Title.CompareTo((obj2 as Book).Title);
+
+                throw new NotImplementedException();
+            }
+        }
+        public class SortByCity : IComparer
+        {
+            int IComparer.Compare(object obj1, object obj2)
+            {
+                if (obj1 is Book && obj2 is Book)
+                    return (obj1 as Book).Author.CompareTo((obj2 as Book).Author);
+
+                throw new NotImplementedException();
+            }
+        }
+
     }
 }
